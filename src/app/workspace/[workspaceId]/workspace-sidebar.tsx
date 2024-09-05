@@ -1,9 +1,11 @@
 import { useCurrentMember } from "@/features/members/api/use-current-member";
 import { useGetWorkspace } from "@/features/workspaces/api/use-get-workspace";
 import useWorkspaceId from "@/hooks/use-workspace-id";
-import { AlertTriangle, Loader } from "lucide-react";
+import { AlertTriangle, Loader, MessageSquare } from "lucide-react";
 import React from "react";
 import WorkspaceHeader from "./workspace-header";
+import SidebarItem from "./sidebar-item";
+import { cva, type VariantProps } from "class-variance-authority";
 
 const WorkspaceSidebar = () => {
   const workspaceId = useWorkspaceId();
@@ -37,6 +39,9 @@ const WorkspaceSidebar = () => {
         workspace={workspace}
         isAdmin={member.role === "admin"}
       />
+      <div className="flex flex-col px-2 mt-3">
+        <SidebarItem label="Threads" icon={MessageSquare} id="threads" />
+      </div>
     </div>
   );
 };
