@@ -1,6 +1,10 @@
+import { useCreateMessage } from "@/features/messages/api/use-create-message";
+import useChannelId from "@/hooks/use-channel-id";
+import useWorkspaceId from "@/hooks/use-workspace-id";
 import dynamic from "next/dynamic";
 import Quill from "quill";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import { toast } from "sonner";
 
 const Editor = dynamic(() => import("@/components/ui/editor"), { ssr: false });
 
@@ -9,9 +13,16 @@ interface ChatInputProps {
 }
 
 const ChatInput = ({ placeholder }: ChatInputProps) => {
+  const [editorKey, setEditorKey] = useState(0);
+  const [pending, setIsPending] = useState(false);
+
   const editorRef = useRef<Quill | null>(null);
 
-  const handleSubmit = ({
+  const workspaceId = useWorkspaceId();
+  const channelId = useChannelId();
+  const { mutate: createMessage } = useCreateMessage();
+
+  const handleSubmit = async ({
     body,
     image,
   }: {
@@ -19,11 +30,28 @@ const ChatInput = ({ placeholder }: ChatInputProps) => {
     image: File | null;
   }) => {
     console.log({ body, image });
+    try {
+      setIsPending(true);
+      createMessage(
+        {
+          workspaceId,
+          channelId,
+          body,
+        },
+        { throwError: true }
+      );
+      setEditorKey((prevKey) => prevKey + 1);
+    } catch (err) {
+      toast.error("Failed to send message");
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
     <div className="px-5 w-full">
       <Editor
+        key={editorKey}
         variant="create"
         placeholder={placeholder}
         onSubmit={handleSubmit}
