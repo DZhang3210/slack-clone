@@ -44,7 +44,7 @@ const ChatInput = ({ placeholder }: ChatInputProps) => {
       setIsPending(true);
       editorRef?.current?.enable(false);
 
-      const values: ChatMessageValues = {
+      let values: ChatMessageValues = {
         channelId,
         workspaceId,
         body,
@@ -53,25 +53,30 @@ const ChatInput = ({ placeholder }: ChatInputProps) => {
 
       if (image) {
         const url = await generateUploadUrl({}, { throwError: true });
-        // console.log("URL", { url });
+        // console.log("URL", { url });\
+        // console.log("1");
         if (!url) {
           throw new Error("Url not found");
         }
+        // console.log("2");
         const result = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": image.type },
           body: image,
         });
+        // console.log("3", result);
         if (!result.ok) {
           throw new Error("Failed to upload image");
         }
+        // console.log("4");
         const { storageId } = await result.json();
-
+        // console.log("5", storageId);
         values.image = storageId;
       }
 
       createMessage(
         {
+          ...values,
           workspaceId,
           channelId,
           body,
