@@ -1,10 +1,7 @@
 "use client";
 import { useGetChannel } from "@/features/channels/api/use-get-channel";
-import { useCreateChannelModal } from "@/features/channels/store/use-create-workspace-modal";
 import useChannelId from "@/hooks/use-channel-id";
-import useWorkspaceId from "@/hooks/use-workspace-id";
 import { Loader, TriangleAlert } from "lucide-react";
-import { useRouter } from "next/navigation";
 import React from "react";
 import Header from "./header";
 import ChatInput from "./chat-input";
@@ -13,11 +10,11 @@ import MessageList from "@/components/message-list";
 
 const ChannelIdPage = () => {
   const channelId = useChannelId();
-
   const { results, status, loadMore } = useGetMessages({ channelId });
   const { data: channel, isLoading: channelLoading } = useGetChannel({
     id: channelId,
   });
+
   if (channelLoading || status === "LoadingFirstPage") {
     return (
       <div className="h-screen flex-1 flex items-center justify-center">

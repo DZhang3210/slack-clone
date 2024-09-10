@@ -1,3 +1,4 @@
+"use client";
 import Quill from "quill";
 import { useEffect, useRef, useState } from "react";
 

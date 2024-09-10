@@ -1,3 +1,4 @@
+"use client";
 import { useCreateMessage } from "@/features/messages/api/use-create-message";
 import { useGenerateUploadUrl } from "@/features/upload/api/use-generate-upload-url";
 import useChannelId from "@/hooks/use-channel-id";
