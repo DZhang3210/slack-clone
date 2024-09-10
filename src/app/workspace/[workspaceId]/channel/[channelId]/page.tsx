@@ -8,13 +8,16 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import Header from "./header";
 import ChatInput from "./chat-input";
+import { useGetMessages } from "@/features/messages/api/use-get-messages";
 
 const ChannelIdPage = () => {
   const channelId = useChannelId();
+
+  const { results } = useGetMessages({ channelId });
   const { data: channel, isLoading: channelLoading } = useGetChannel({
     id: channelId,
   });
-
+  console.log(results);
   if (channelLoading) {
     return (
       <div className="h-screen flex-1 flex items-center justify-center">
