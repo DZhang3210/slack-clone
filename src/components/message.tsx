@@ -1,14 +1,17 @@
 import { Doc, Id } from "../../convex/_generated/dataModel";
 import React from "react";
-import Renderer from "./renderer";
 import dynamic from "next/dynamic";
 import { format, isToday, isYesterday } from "date-fns";
 import Hint from "./hint";
 import { Avatar } from "./ui/avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Thumbnail } from "./thumbnail";
+import { Toolbar } from "./toolbar";
+import { useUpdateMessage } from "@/features/messages/api/use-update-message";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
-const renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
+const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 
 interface MessageProps {
   id: Id<"messages">;
@@ -58,9 +61,35 @@ const Message = ({
   threadImage,
   threadTimestamp,
 }: MessageProps) => {
+  const { mutate: updateMessage, isPending: isUpdatingMessage } =
+    useUpdateMessage();
+
+  const isPending = isUpdatingMessage;
+
+  const handleEdit = ({ body }: { body: string }) => {
+    updateMessage(
+      { id, body },
+      {
+        onSuccess: () => {
+          toast.success("Message updated");
+          setEditingId(null);
+        },
+        onError: () => {
+          toast.error("Failed to update message");
+        },
+      }
+    );
+  };
+
   if (isCompact) {
+    console.log("isEditing", isEditing);
     return (
-      <div className="flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative">
+      <div
+        className={cn(
+          "flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative",
+          isEditing && "bg-[#f2c74433] hover:bg-[#f2c74433]"
+        )}
+      >
         <div className="flex items-start gap-2">
           <Hint label={formatFullTime(new Date(createdAt))}>
             <button className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 w-[40px] leading-[22px] text-center hover:underline">
@@ -75,13 +104,28 @@ const Message = ({
             ) : null}
           </div>
         </div>
+        {!isEditing && (
+          <Toolbar
+            isAuthor={isAuthor}
+            isPending={false}
+            handleEdit={() => setEditingId(id)}
+            handleThread={() => {}}
+            handleDelete={() => {}}
+            handleReaction={() => {}}
+            hideThreadButton={hideThreadButton}
+          />
+        )}
       </div>
     );
   }
   const avatarFallback = authorName.charAt(0).toUpperCase();
-  console.log("IMAGE", image);
   return (
-    <div className="flex gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative">
+    <div
+      className={cn(
+        "flex gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative",
+        isEditing && "bg-[#f2c74433] hover:bg-[#f2c74433]"
+      )}
+    >
       <div className="flex items-start gap-2">
         <button>
           <Avatar className="size-10 hover:opacity-75 transition">
@@ -111,6 +155,17 @@ const Message = ({
           <span className="text-xs text-muted-foreground">(edited)</span>
         ) : null}
       </div>
+      {!isEditing && (
+        <Toolbar
+          isAuthor={isAuthor}
+          isPending={false}
+          handleEdit={() => setEditingId(id)}
+          handleThread={() => {}}
+          handleDelete={() => {}}
+          handleReaction={() => {}}
+          hideThreadButton={hideThreadButton}
+        />
+      )}
     </div>
   );
 };
