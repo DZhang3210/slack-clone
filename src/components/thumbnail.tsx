@@ -13,7 +13,7 @@ interface ThumbnailProps {
 
 export const Thumbnail = ({ url }: ThumbnailProps) => {
   if (!url) return null;
-  console.log("URL", url);
+  // console.log("URL", url);
   return (
     <Dialog>
       <DialogTrigger>

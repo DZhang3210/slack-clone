@@ -94,7 +94,8 @@ const Editor = ({
                 const body = JSON.stringify(quill.getContents());
 
                 submitRef.current?.({ body, image: addedImage });
-
+                // quill.setContents([]);
+                // setText("");
                 return;
               },
             },
@@ -155,7 +156,7 @@ const Editor = ({
 
   const isEmpty = !image && text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
 
-  console.log({ isEmpty, text });
+  // console.log({ isEmpty, text });
 
   return (
     <div className="flex flex-col">
