@@ -190,6 +190,7 @@ export const getById = query({
         memberIds: Id<"members">[];
       })[]
     );
+
     const reactionsWithoutMemberIdProperty = dedupedReactions.map(
       ({ memberId, ...rest }) => rest
     );
@@ -216,7 +217,11 @@ export const get = query({
   handler: async (ctx, args) => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
-      throw new Error("Unathorized");
+      return {
+        page: [],
+        isDone: true, // Indicates there are no more results to load
+        continueCursor: "", // No further pagination cursor
+      };
     }
 
     let _conversationId = args.conversationId;
@@ -240,6 +245,7 @@ export const get = query({
       )
       .order("desc")
       .paginate(args.paginationOpts);
+    // console.log("RESULTS", results);
 
     return {
       ...results,

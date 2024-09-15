@@ -15,6 +15,8 @@ const ChannelIdPage = () => {
     id: channelId,
   });
 
+  console.log("RESULTS", results);
+
   if (channelLoading || status === "LoadingFirstPage") {
     return (
       <div className="h-screen flex-1 flex items-center justify-center">

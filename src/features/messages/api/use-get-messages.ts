@@ -23,7 +23,6 @@ export const useGetMessages = ({
     { channelId, conversationId, parentMessageId },
     { initialNumItems: BATCH_SIZE }
   );
-
   return {
     results,
     status,
