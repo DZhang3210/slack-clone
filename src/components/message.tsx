@@ -69,7 +69,6 @@ const Message = ({
   threadImage,
   threadTimestamp,
 }: MessageProps) => {
-  const router = useRouter();
   const { parentMessageId, onOpenMessage, onClose } = usePanel();
 
   const [ConfirmDialog, confirm] = useConfirm(

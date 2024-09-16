@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 const UserButton = () => {
   const { signOut } = useAuthActions();
   const { data, isLoading } = useCurrentUser();
-
+  console.log("USER", data?.image);
   if (isLoading) {
     return <Loader className="size-4 animate-spin text-muted-foreground" />;
   }

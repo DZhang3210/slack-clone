@@ -9,7 +9,6 @@ interface RendererProps {
 const Renderer = ({ value }: RendererProps) => {
   const [isEmpty, setIsEmpty] = useState(false);
   const renderRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (!renderRef.current) return;
     const container = renderRef.current;
@@ -37,7 +36,7 @@ const Renderer = ({ value }: RendererProps) => {
         container.innerHTML = "";
       }
     };
-  }, []);
+  }, [value]);
   if (isEmpty) return null;
 
   return <div ref={renderRef} className="ql-editor ql-renderer" />;
