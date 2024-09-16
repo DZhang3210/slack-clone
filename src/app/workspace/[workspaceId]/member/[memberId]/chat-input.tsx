@@ -1,7 +1,6 @@
 "use client";
 import { useCreateMessage } from "@/features/messages/api/use-create-message";
 import { useGenerateUploadUrl } from "@/features/upload/api/use-generate-upload-url";
-import useChannelId from "@/hooks/use-channel-id";
 import useWorkspaceId from "@/hooks/use-workspace-id";
 import dynamic from "next/dynamic";
 import Quill from "quill";
@@ -14,22 +13,22 @@ const Editor = dynamic(() => import("@/components/ui/editor"), { ssr: false });
 
 interface ChatInputProps {
   placeholder: string;
+  conversationId: Id<"conversations">;
 }
 type ChatMessageValues = {
-  channelId: Id<"channels">;
+  conversationId: Id<"conversations">;
   workspaceId: Id<"workspaces">;
   body: string;
   image?: Id<"_storage"> | undefined;
 };
 
-const ChatInput = ({ placeholder }: ChatInputProps) => {
+const ChatInput = ({ placeholder, conversationId }: ChatInputProps) => {
   const [editorKey, setEditorKey] = useState(0);
   const [pending, setIsPending] = useState(false);
 
   const editorRef = useRef<Quill | null>(null);
 
   const workspaceId = useWorkspaceId();
-  const channelId = useChannelId();
   const { mutate: createMessage } = useCreateMessage();
   const { mutate: generateUploadUrl } = useGenerateUploadUrl();
 
@@ -46,7 +45,7 @@ const ChatInput = ({ placeholder }: ChatInputProps) => {
       editorRef?.current?.enable(false);
 
       let values: ChatMessageValues = {
-        channelId,
+        conversationId,
         workspaceId,
         body,
         image: undefined,
@@ -79,7 +78,7 @@ const ChatInput = ({ placeholder }: ChatInputProps) => {
         {
           ...values,
           workspaceId,
-          channelId,
+          conversationId,
           body,
         },
         { throwError: true }

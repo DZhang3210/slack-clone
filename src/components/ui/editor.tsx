@@ -215,7 +215,7 @@ const Editor = ({
               disabled={disabled}
               size="iconSm"
               variant="ghost"
-              onClick={() => {}}
+              // onClick={() => {}}
             >
               <Smile className="size-4" />
             </Button>
